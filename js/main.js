@@ -1,4 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
+  const jogosDiv = document.getElementById("jogos");
+  jogosDiv.innerHTML = "<p>🔍 Buscando jogos de hoje...</p>";
+
   // Atualiza data no rodapé
   const dataAtual = new Date().toLocaleDateString("pt-BR", {
     day: "2-digit",
@@ -7,18 +10,23 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   document.getElementById("data-atualizacao").innerHTML = `<em>Atualizado em: ${dataAtual}</em>`;
 
-  // Busca jogos do dia (Brasileirão, Premier League, La Liga)
+  // Mapeamento de ligas
   const leagues = {
-    4328: "Brasileirão", // Série A
-    4329: "Premier League",
-    4335: "La Liga"
+    4328: "Brasileirão",      // Brasileirão Série A
+    4329: "Premier League",   // Inglaterra
+    4335: "La Liga",          // Espanha
+    4331: "Bundesliga",       // Alemanha
+    4334: "Serie A"           // Itália
   };
 
-  const jogosDiv = document.getElementById("jogos");
-  jogosDiv.innerHTML = "<p>Carregando jogos...</p>";
+  let jogosHTML = "";  // Armazena todos os jogos
+  let requestsCompleted = 0;
 
-  // Limpa lista antes de adicionar novos
-  let jogosHTML = "";
+  // Função para formatar hora (ex: 20:00)
+  const formatTime = (time) => {
+    if (!time) return "—";
+    return time.slice(0, 5);
+  };
 
   // Para cada liga, busca os jogos do dia
   Object.keys(leagues).forEach(leagueId => {
@@ -29,23 +37,33 @@ document.addEventListener("DOMContentLoaded", () => {
           data.events.forEach(game => {
             const time1 = game.strHomeTeam;
             const time2 = game.strAwayTeam;
-            const hora = game.strTime?.slice(0, 5) || "—";
+            const hora = formatTime(game.strTime);
             const liga = leagues[leagueId];
 
             jogosHTML += `<p><strong>${time1} vs ${time2}</strong> | ${hora} | ${liga}</p>`;
-            jogosDiv.innerHTML = jogosHTML; // Atualiza em tempo real
           });
         }
       })
       .catch(err => {
-        console.log("Erro ao carregar", err);
+        console.error(`Erro na liga ${leagueId}:`, err);
+      })
+      .finally(() => {
+        requestsCompleted++;
+        if (requestsCompleted === Object.keys(leagues).length) {
+          // Todas as requisições terminaram
+          if (jogosHTML === "") {
+            jogosDiv.innerHTML = "<p>📅 Nenhum jogo programado para hoje. Volte amanhã!</p>";
+          } else {
+            jogosDiv.innerHTML = jogosHTML;
+          }
+        }
       });
   });
 
-  // Se não carregar nada
+  // Fallback: se nada carregar em 5 segundos
   setTimeout(() => {
-    if (jogosDiv.innerHTML === "<p>Carregando jogos...</p>" || !jogosHTML) {
-      jogosDiv.innerHTML = "<p>Nenhum jogo encontrado hoje. Volte amanhã!</p>";
+    if (jogosDiv.innerHTML.includes("Buscando") || jogosDiv.innerHTML === "") {
+      jogosDiv.innerHTML = "<p>⚠️ Falha ao carregar jogos. Verifique a conexão ou tente mais tarde.</p>";
     }
-  }, 3000);
+  }, 5000);
 });
