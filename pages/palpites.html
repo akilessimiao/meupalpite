@@ -1,1 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Palpites de Hoje - Meu Palpite</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <header>
+    <h1>🎯 Meu Palpite</h1>
+    <p>Palpites de futebol com análise e dados reais</p>
+  </header>
 
+  <nav>
+    <a href="../index.html">Início</a>
+    <a href="palpites.html">Palpites</a>
+    <a href="sobre.html">Sobre</a>
+  </nav>
+
+  <main>
+    <h2>🔥 Palpites de Hoje</h2>
+    <ul>
+      <li><strong>Flamengo vs Palmeiras</strong>: Empate ou Palmeiras (Odds: 3.20) → <a href="https://partner.betano.com/r/2896848" target="_blank">Aposte</a></li>
+      <li><strong>Liverpool vs Chelsea</strong>: Over 2.5 gols (Estatística: 70% dos jogos têm +2.5) → <a href="https://partner.betano.com/r/2896848" target="_blank">Aposte</a></li>
+      <li><strong>Barcelona vs Atlético</strong>: Ambos marcam (BTTS: Sim) → <a href="https://www.pixbet.com/afiliados" target="_blank">Aposte</a></li>
+    </ul>
+    <p><em>Atualizado em: <span id="data-palpites"></span></em></p>
+  </main>
+
+  <footer>
+    <p>⚠️ Este site não realiza apostas. Links são de parceiros licenciados pela ANJ.</p>
+    <p><a href="https://jogandocontraovicio.org.br" target="_blank">Jogue com responsabilidade</a></p>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const data = new Date().toLocaleDateString("pt-BR");
+      document.getElementById("data-palpites").textContent = data;
+    });
+  </script>
+</body>
+</html>
